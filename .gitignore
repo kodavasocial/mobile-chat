@@ -86,3 +86,4 @@ dmypy.json
 # Pycharm and VSCode IDE settings
 .idea/
 .vscode/
+serviceAccountKey.json/
