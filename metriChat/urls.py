@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from .views import success_response, failure_response
 
 urlpatterns = [
+    path('', admin.site.urls),
     path('admin/', admin.site.urls),
     path('payment-success/', success_response),
     path('payment-failure/', failure_response),
@@ -31,4 +32,5 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
