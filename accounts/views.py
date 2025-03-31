@@ -5,22 +5,18 @@ from rest_framework import status
 from .models import User
 from django.db.models import Q
 from .serializers import UserRegisterSerializer, UserProfileSerializer
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 
 
 class UserRegisterView(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
     permission_classes = [permissions.AllowAny]
 
-
-@method_decorator(csrf_exempt, name='dispatch')
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         password = request.data.get("password")
         device_token = request.data.get("device_token")
-
+        
         user = User.objects.filter(Q(username=email) | Q(email=email)).first()
         if user and user.check_password(password):
             validated_data = {
@@ -37,7 +33,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer

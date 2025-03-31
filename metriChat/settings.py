@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-xn*4gctnb*505b7l-_-dou@h-ofx&w@7cg6$8y-b+b3n&p!%#c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -57,29 +57,18 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.middleware.security.SecurityMiddleware',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "http://192.168.81.38:8000",
-    "https://mrwedsmrs.chat",
-
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://mrwedsmrs.chat",
-]
 ROOT_URLCONF = 'metriChat.urls'
-
-CORS_ALLOW_CREDENTIALS = True  # Allow credentials (cookies) to be sent
-
-CSRF_COOKIE_SECURE = True  #
 
 TEMPLATES = [
     {
@@ -170,16 +159,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-# Define STATIC_ROOT for collecting static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-STATICFILES_DIRS = [
-    # If you store static files in a separate folder
-    os.path.join(BASE_DIR, 'staticfiles'),
-]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

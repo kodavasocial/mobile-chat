@@ -13,7 +13,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
             'username': {'required': True},
-            'email': {'required': True}
+            'email': {'required': True},
+            'custom_id': {'required': True}
         }
 
     def validate_password(self, value):
@@ -22,8 +23,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        # validated_data['custom_id'] = 5123654
+        print(validated_data)
         user = User(**validated_data)
         user.set_password(validated_data['password'])
+        print('validated_data>>', validated_data)
         user.save()
         return user
 

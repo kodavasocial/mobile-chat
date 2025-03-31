@@ -11,17 +11,11 @@ from subscriptions.models import UserSubscription
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
-import os
 
-# Construct the path to the serviceAccountKey.json file
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-service_account_path = os.path.join(
-    BASE_DIR, 'serviceAccountKey.json')
 
-cred = credentials.Certificate(service_account_path)
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
+# cred = credentials.Certificate("<path>")
+# firebase_admin.initialize_app(cred)
+# db = firestore.client()
 
 class CallAPIView(APIView):
     """
@@ -33,8 +27,7 @@ class CallAPIView(APIView):
         """
         Retrieve all call records.
         """
-        calls = Call.objects.filter(Q(caller=request.user) | Q(receiver=request.user)).order_by(
-            '-call_time')  # Retrieve calls in descending order of time
+        calls = Call.objects.filter(Q(caller=request.user) | Q(receiver=request.user)).order_by('-call_time')  # Retrieve calls in descending order of time
         serializer = CallSerializer(calls, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -51,27 +44,25 @@ class CallAPIView(APIView):
         data = request.data
         data['caller'] = request.user.id
         serializer = CallSerializer(data=data)
-
+        
         if serializer.is_valid():
             serializer.save()
 
             # update subscription
-            current_subscription = UserSubscription.objects.filter(
-                user=request.user, active=True).first()
+            current_subscription = UserSubscription.objects.filter(user=request.user, active=True).first()
             if current_subscription:
                 current_subscription.calls -= call_duration/60
                 current_subscription.save()
 
             # delete firebase entry
-            doc_ref = db.collection('meet').document('chatId')
-            subcollections = doc_ref.collections()
-            for subcollection in subcollections:
-                if subcollection.id in [user1.username, user2.username]:
-                    subcollection_ref = db.document(
-                        'meet/chatId').collection(subcollection.id)
-                    docs = subcollection_ref.stream()
-                    for doc in docs:
-                        subcollection_ref.document(doc.id).delete()
+            # doc_ref = db.collection('meet').document('chatId')
+            # subcollections = doc_ref.collections()
+            # for subcollection in subcollections:
+            #     if subcollection.id in [user1.username, user2.username]:
+            #         subcollection_ref = db.document('meet/chatId').collection(subcollection.id)
+            #         docs = subcollection_ref.stream()
+            #         for doc in docs:
+            #             subcollection_ref.document(doc.id).delete()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -82,13 +73,11 @@ class CallLimit(APIView):
 
     def get(self, request):
         try:
-            current_subscription = UserSubscription.objects.filter(
-                user=request.user, active=True).first()
+            current_subscription = UserSubscription.objects.filter(user=request.user, active=True).first()
 
             if current_subscription:
                 subscription_start_date = current_subscription.created_at
-                subscription_duration = timedelta(
-                    days=current_subscription.subscription.time_period * 30)  # Convert months to days
+                subscription_duration = timedelta(days=current_subscription.subscription.time_period * 30)  # Convert months to days
                 expiry_date = subscription_start_date + subscription_duration
 
                 # Check if the subscription has expired
@@ -97,15 +86,14 @@ class CallLimit(APIView):
                     current_subscription.delete()
 
                     # Activate a new subscription if it exists
-                    new_subscription = UserSubscription.objects.filter(
-                        user=request.user).first()
+                    new_subscription = UserSubscription.objects.filter(user=request.user).first()
                     if new_subscription:
                         new_subscription.active = True
                         new_subscription.save()
                         current_subscription = new_subscription
                     else:
                         return Response(status=status.HTTP_400_BAD_REQUEST)
-
+            
             if not current_subscription:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
