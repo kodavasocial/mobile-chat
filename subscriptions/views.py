@@ -131,8 +131,8 @@ class MakePaymentView(APIView):
         first_name = request.user.first_name
         email = request.user.email
         phone = request.user.mobile_number
-        surl = "http://192.168.1.101:8000/payment-success/"
-        furl = "http://192.168.1.101:8000/payment-failure/"
+        surl = "https://mrwedsmrs.chat/payment-success/"
+        furl = "https://mrwedsmrs.chat/payment-failure/"
 
         # Create the hash string
         hash_string = f"{api_key}|{txn_id}|{amount}|{product_info}|{first_name}|{email}|||||||||||{salt}"
