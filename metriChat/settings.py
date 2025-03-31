@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -68,9 +68,18 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "http://192.168.81.38:8000",
+    "https://mrwedsmrs.chat",
+
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://mrwedsmrs.chat",
+]
 ROOT_URLCONF = 'metriChat.urls'
+
+CORS_ALLOW_CREDENTIALS = True  # Allow credentials (cookies) to be sent
+
+CSRF_COOKIE_SECURE = True  #
 
 TEMPLATES = [
     {
