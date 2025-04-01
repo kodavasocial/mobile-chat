@@ -87,3 +87,4 @@ dmypy.json
 .idea/
 .vscode/
 serviceAccountKey.json/
+db.sqlite3
